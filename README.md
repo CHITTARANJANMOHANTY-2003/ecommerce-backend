@@ -19,7 +19,7 @@ Supports user registration/login, role-based access (ADMIN / CUSTOMER), product 
 | API docs           | Swagger (OpenAPI)           |
 | Containerization   | Docker                      |
 | Repo / hosting     | GitHub                      |
-| Drive / submission | Google Drive                |
+
 
 ---
 
