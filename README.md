@@ -384,7 +384,7 @@ ROLE_ADMIN
 
 **Response Example**
 
-```json id="h20"
+   json id="h20"
 {
   "message": "Admin user created successfully"
 }
