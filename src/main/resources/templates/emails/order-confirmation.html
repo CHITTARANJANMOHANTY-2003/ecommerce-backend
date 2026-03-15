@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <h2>Hi <span th:text="${order.user.name}">Customer</span>,</h2>
+    <p>Thanks for your order <strong>#<span th:text="${order.id}"></span></strong> placed on
+       <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></span>.</p>
+
+    <h3>Order Summary</h3>
+    <ul>
+      <li th:each="item : ${order.items}">
+         <span th:text="${item.product.name}">Product</span> x <span th:text="${item.quantity}">1</span>
+         - ₹<span th:text="${item.price}">0</span>
+      </li>
+    </ul>
+
+    <p><strong>Total:</strong> ₹<span th:text="${order.totalAmount}">0</span></p>
+
+    <p>We will notify you when the order ships. If you have any questions, reply to this email.</p>
+
+    <hr/>
+    <small>© MyShop</small>
+  </body>
+</html>

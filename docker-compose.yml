@@ -1,0 +1,60 @@
+
+services:
+  # ------------------------------
+  # MySQL Database
+  # ------------------------------
+  db:
+    image: mysql:8.0
+    container_name: ecommerce-db
+    environment:
+      MYSQL_ROOT_PASSWORD: "Chitta@18*59"   # Root password
+      MYSQL_DATABASE: "ecommerce_db"        # Database created on startup
+    ports:
+      - "3307:3306"   # Host:Container port mapping
+    networks:
+      - ecommerce_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+
+  # ------------------------------
+  # Spring Boot Application
+  # ------------------------------
+  app:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ecommerce_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "Chitta@18*59"
+      SPRING_MAIL_HOST: mailhog               # SMTP host for sending emails
+      SPRING_MAIL_PORT: 1025                  # SMTP port
+      SPRING_MAIL_USERNAME: ""                # Not required
+      SPRING_MAIL_PASSWORD: ""                # Not required
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce_net
+
+  # ------------------------------
+  # MailHog - SMTP & Web UI
+  # ------------------------------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"   # Web UI port to view emails
+      - "1025:1025"   # SMTP port for sending emails from app
+    networks:
+      - ecommerce_net
+
+# ------------------------------
+# Docker Network
+# ------------------------------
+networks:
+  ecommerce_net:
+    driver: bridge
