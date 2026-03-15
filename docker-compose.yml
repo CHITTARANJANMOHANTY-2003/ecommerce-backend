@@ -7,7 +7,7 @@ services:
     image: mysql:8.0
     container_name: ecommerce-db
     environment:
-      MYSQL_ROOT_PASSWORD: "Chitta@18*59"   # Root password
+      MYSQL_ROOT_PASSWORD: "your_password"   # Root password
       MYSQL_DATABASE: "ecommerce_db"        # Database created on startup
     ports:
       - "3307:3306"   # Host:Container port mapping
