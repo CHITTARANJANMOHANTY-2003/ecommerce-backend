@@ -186,6 +186,211 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
+## Admin APIs
+
+These APIs are **restricted to users with the `ROLE_ADMIN` role**.
+All requests must include the **JWT token** in the header.
+
+**Header**
+
+```id="h1"
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## Get All Users
+
+**Endpoint**
+
+```id="h2"
+GET /api/admin/users
+```
+
+**Description**
+
+Retrieves a list of all registered users in the system.
+Only accessible by **ADMIN**.
+
+**Authorization**
+
+```id="h3"
+ROLE_ADMIN
+```
+
+**Response Example**
+
+```json id="h4"
+[
+  {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@gmail.com",
+    "role": "ROLE_ADMIN"
+  },
+  {
+    "id": 2,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "ROLE_CUSTOMER"
+  }
+]
+```
+
+---
+
+## Get User By ID
+
+**Endpoint**
+
+```id="h5"
+GET /api/admin/users/{id}
+```
+
+**Description**
+
+Retrieves details of a specific user based on the user ID.
+
+**Authorization**
+
+```id="h6"
+ROLE_ADMIN
+```
+
+**Path Parameter**
+
+| Parameter | Type | Description    |
+| --------- | ---- | -------------- |
+| id        | Long | ID of the user |
+
+**Example Request**
+
+```id="h7"
+GET /api/admin/users/2
+```
+
+**Response Example**
+
+```json id="h8"
+{
+  "id": 2,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "ROLE_CUSTOMER"
+}
+```
+
+---
+
+## Update User
+
+**Endpoint**
+
+```id="h9"
+PUT /api/admin/users/{id}
+```
+
+**Description**
+
+Allows an **admin to update user details** such as name, email, or role.
+
+**Authorization**
+
+```id="h10"
+ROLE_ADMIN
+```
+
+**Request Body Example**
+
+```json id="h11"
+{
+  "name": "John Updated",
+  "email": "johnupdated@example.com",
+  "role": "ROLE_CUSTOMER"
+}
+```
+
+**Response Example**
+
+```json id="h12"
+{
+  "message": "User updated successfully"
+}
+```
+
+---
+
+## Delete User
+
+**Endpoint**
+
+```id="h13"
+DELETE /api/admin/users/{id}
+```
+
+**Description**
+
+Deletes a user account from the system.
+
+**Authorization**
+
+```id="h14"
+ROLE_ADMIN
+```
+
+**Example Request**
+
+```id="h15"
+DELETE /api/admin/users/3
+```
+
+**Response Example**
+
+```json id="h16"
+{
+  "message": "User deleted successfully"
+}
+```
+
+---
+
+## Create Admin User
+
+**Endpoint**
+
+```id="h17"
+POST /api/admin/create-admin
+```
+
+**Description**
+
+Allows an **existing admin to create another admin account**.
+
+**Authorization**
+
+```id="h18"
+ROLE_ADMIN
+```
+
+**Request Body**
+
+```json id="h19"
+{
+  "name": "New Admin",
+  "email": "newadmin@example.com",
+  "password": "admin123"
+}
+```
+
+**Response Example**
+
+```json id="h20"
+{
+  "message": "Admin user created successfully"
+}
+
+---
+
 ### PRODUCTS (public & admin)
 
 #### `GET /api/products`
