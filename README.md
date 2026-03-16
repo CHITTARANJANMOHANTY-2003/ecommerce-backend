@@ -314,15 +314,15 @@ Status code
 
 ---
 
-Change Password
+### Change Password
 
 Changes the password of the authenticated user.
 
-Endpoint
+#### Endpoint
 
 PUT /api/users/me/password
 
-Authorization
+#### Authorization
 
 Bearer Token (JWT)
 
@@ -342,224 +342,314 @@ curl -X PUT "http://localhost:8080/api/users/me/password?newPassword=Rahul@456" 
  -H "Content-Type: application/json"
 ```
 
-Response (200)
+#### Response (200)
 Password updated successfully
 
-Status Codes
+#### Status Codes
 
-Code	Description
-200	Password updated successfully
-400	Bad request
-401	Unauthorized
-403	Forbidden
-500	Internal server error
+| Code | Description                   |
+| ---- | ----------------------------- |
+| 200  | Password updated successfully |
+| 400  | Bad request                   |
+| 401  | Unauthorized                  |
+| 403  | Forbidden                     |
+| 500  | Internal server error         |
+
 
 ---
 
-## Admin APIs
+Below is the **Markdown documentation strictly following your stored template structure** (###, ####, tables, and fenced code blocks). You can **paste this directly into your `README.md`**.
 
-These APIs are **restricted to users with the `ROLE_ADMIN` role**.
-All requests must include the **JWT token** in the header.
+---
 
-**Header**
+# Admin Management APIs
 
-```id="h1"
-Authorization: Bearer <JWT_TOKEN>
+---
+
+### Create Admin
+
+Creates a new administrator account.
+
+#### Endpoint
+
+POST /api/admin/create-admin
+
+#### Authorization
+
+Bearer Token (JWT)
+
+#### Request Body
+
+```json
+{
+  "name": "Super Admin",
+  "email": "superadmin@shopkart.com",
+  "password": "SuperAdmin@123"
+}
 ```
 
+```bash
+cURL Example
+curl -X POST "http://localhost:8080/api/admin/create-admin" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json" \
+ -d '{
+  "name": "Super Admin",
+  "email": "superadmin@shopkart.com",
+  "password": "SuperAdmin@123"
+}'
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 4,
+  "name": "Super Admin",
+  "email": "superadmin@shopkart.com",
+  "password": null,
+  "role": "ROLE_ADMIN"
+}
+```
+
+#### Status Codes
+
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 200  | Admin created successfully     |
+| 400  | Bad request / validation error |
+| 401  | Unauthorized                   |
+| 403  | Forbidden                      |
+| 500  | Internal server error          |
+
 ---
 
-## Get All Users
+### Get All Users
 
-**Endpoint**
+Retrieves a list of all users in the system.
 
-```id="h2"
+#### Endpoint
+
 GET /api/admin/users
+
+#### Authorization
+
+Bearer Token (JWT)
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/admin/users" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
 ```
 
-**Description**
+#### Response (200)
 
-Retrieves a list of all registered users in the system.
-Only accessible by **ADMIN**.
-
-**Authorization**
-
-```id="h3"
-ROLE_ADMIN
-```
-
-**Response Example**
-
-```json id="h4"
+```json
 [
   {
     "id": 1,
-    "name": "Admin User",
+    "name": "Admin",
     "email": "admin@gmail.com",
+    "password": null,
     "role": "ROLE_ADMIN"
   },
   {
     "id": 2,
-    "name": "John Doe",
-    "email": "john@example.com",
+    "name": "Rahul Kumar Sharma",
+    "email": "rahul.kumar@gmail.com",
+    "password": null,
     "role": "ROLE_CUSTOMER"
+  },
+  {
+    "id": 3,
+    "name": "Priya Das",
+    "email": "priya.das@gmail.com",
+    "password": null,
+    "role": "ROLE_CUSTOMER"
+  },
+  {
+    "id": 4,
+    "name": "Super Admin",
+    "email": "superadmin@shopkart.com",
+    "password": null,
+    "role": "ROLE_ADMIN"
   }
 ]
 ```
 
+#### Status Codes
+
+| Code | Description                  |
+| ---- | ---------------------------- |
+| 200  | Users retrieved successfully |
+| 401  | Unauthorized                 |
+| 403  | Forbidden                    |
+| 500  | Internal server error        |
+
 ---
 
-## Get User By ID
+### Get User By ID
 
-**Endpoint**
+Retrieves the details of a specific user by their ID.
 
-```id="h5"
+#### Endpoint
+
 GET /api/admin/users/{id}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type    | Description    |
+| --------- | ------- | -------------- |
+| id        | Integer | ID of the user |
+
+Example Request URL
+
+/api/admin/users/3
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/admin/users/3" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
 ```
 
-**Description**
+#### Response (200)
 
-Retrieves details of a specific user based on the user ID.
-
-**Authorization**
-
-```id="h6"
-ROLE_ADMIN
-```
-
-**Path Parameter**
-
-| Parameter | Type | Description    |
-| --------- | ---- | -------------- |
-| id        | Long | ID of the user |
-
-**Example Request**
-
-```id="h7"
-GET /api/admin/users/2
-```
-
-**Response Example**
-
-```json id="h8"
+```json
 {
-  "id": 2,
-  "name": "John Doe",
-  "email": "john@example.com",
+  "id": 3,
+  "name": "Priya Das",
+  "email": "priya.das@gmail.com",
+  "password": null,
   "role": "ROLE_CUSTOMER"
 }
 ```
 
+#### Status Codes
+
+| Code | Description                 |
+| ---- | --------------------------- |
+| 200  | User retrieved successfully |
+| 401  | Unauthorized                |
+| 403  | Forbidden                   |
+| 404  | User not found              |
+| 500  | Internal server error       |
+
 ---
 
-## Update User
+### Update User
 
-**Endpoint**
+Updates the information of an existing user.
 
-```id="h9"
+#### Endpoint
+
 PUT /api/admin/users/{id}
-```
 
-**Description**
+#### Authorization
 
-Allows an **admin to update user details** such as name, email, or role.
+Bearer Token (JWT)
 
-**Authorization**
+| Parameter | Type    | Description    |
+| --------- | ------- | -------------- |
+| id        | Integer | ID of the user |
 
-```id="h10"
-ROLE_ADMIN
-```
+Example Request URL
 
-**Request Body Example**
+/api/admin/users/3
 
-```json id="h11"
+#### Request Body
+
+```json
 {
-  "name": "John Updated",
-  "email": "johnupdated@example.com",
+  "name": "Priya Dash",
+  "email": "priya.dash@gmail.com",
   "role": "ROLE_CUSTOMER"
 }
 ```
 
-**Response Example**
+```bash
+cURL Example
+curl -X PUT "http://localhost:8080/api/admin/users/3" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json" \
+ -d '{
+  "name": "Priya Dash",
+  "email": "priya.dash@gmail.com",
+  "role": "ROLE_CUSTOMER"
+}'
+```
 
-```json id="h12"
+#### Response (200)
+
+```json
 {
-  "message": "User updated successfully"
+  "id": 3,
+  "name": "Priya Dash",
+  "email": "priya.dash@gmail.com",
+  "password": null,
+  "role": "ROLE_CUSTOMER"
 }
 ```
 
+#### Status Codes
+
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | User updated successfully |
+| 400  | Bad request               |
+| 401  | Unauthorized              |
+| 403  | Forbidden                 |
+| 404  | User not found            |
+| 500  | Internal server error     |
+
 ---
 
-## Delete User
+### Delete User
 
-**Endpoint**
+Deletes a user from the system.
 
-```id="h13"
+#### Endpoint
+
 DELETE /api/admin/users/{id}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type    | Description    |
+| --------- | ------- | -------------- |
+| id        | Integer | ID of the user |
+
+Example Request URL
+
+/api/admin/users/3
+
+```bash
+cURL Example
+curl -X DELETE "http://localhost:8080/api/admin/users/3" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
 ```
 
-**Description**
+#### Response (200)
 
-Deletes a user account from the system.
+User deleted successfully
 
-**Authorization**
+#### Status Codes
 
-```id="h14"
-ROLE_ADMIN
-```
-
-**Example Request**
-
-```id="h15"
-DELETE /api/admin/users/3
-```
-
-**Response Example**
-
-```json id="h16"
-{
-  "message": "User deleted successfully"
-}
-```
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | User deleted successfully |
+| 401  | Unauthorized              |
+| 403  | Forbidden                 |
+| 404  | User not found            |
+| 500  | Internal server error     |
 
 ---
 
-## Create Admin User
-
-**Endpoint**
-
-```id="h17"
-POST /api/admin/create-admin
-```
-
-**Description**
-
-Allows an **existing admin to create another admin account**.
-
-**Authorization**
-
-```id="h18"
-ROLE_ADMIN
-```
-
-**Request Body**
-
-```json id="h19"
-{
-  "name": "New Admin",
-  "email": "newadmin@example.com",
-  "password": "admin123"
-}
-```
-
-**Response Example**
-
-   json id="h20"
-{
-  "message": "Admin user created successfully"
-}
-
----
 
 ### PRODUCTS (public & admin)
 
