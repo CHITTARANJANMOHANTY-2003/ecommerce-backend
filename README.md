@@ -123,11 +123,14 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
-## Full API documentation (each endpoint, auth & example)
+## Full API Documentation (Each Endpoint, Auth & Example)
 
-> Replace `{{baseUrl}}` with `http://localhost:8080`. For protected endpoints include header `Authorization: Bearer <JWT>`.
+> Replace `{{baseUrl}}` with `http://localhost:8080`.  
+> For protected endpoints include header `Authorization: Bearer <JWT>`.
 
-### AUTH / USER
+---
+
+## AUTH / USER APIs
 
 ### POST /api/users/register
 
@@ -142,7 +145,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 - `Content-Type: application/json`
 
-**Request Body (example — from saved response's originalRequest)**
+**Request Body**
 
 ```json
 {
@@ -151,9 +154,6 @@ Authorization: Bearer <JWT_TOKEN>
   "password": "Rahul@123"
 }
 
-
-```
-cURL Example
 curl -X POST "{{baseUrl}}/api/users/register" \
   -H "Content-Type: application/json" \
   -d '{
@@ -169,18 +169,15 @@ Response (200)
   "password": null,
   "role": "ROLE_CUSTOMER"
 }
-
-Status Codes
-Code	Description
-200	Success (example in exported response)
-201	Resource created (recommended for successful registration)
-400	Bad request / validation error
-409	Conflict (e.g., email already exists)
-500	Internal server error
-* **Response (200)** — example:
-
-
-> Use this token in `Authorization` header for protected calls.
+| Code | Description                                                |
+| ---- | ---------------------------------------------------------- |
+| 200  | Success (example shown above from Postman response)        |
+| 201  | Resource created (recommended for successful registration) |
+| 400  | Bad request / validation error                             |
+| 409  | Conflict (e.g., email already exists)                      |
+| 500  | Internal server error                                      |
+---
+```
 
 #### `GET /api/users/me`
 
