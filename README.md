@@ -363,7 +363,7 @@ Password updated successfully
 
 ### Create Admin
 
-Creates a new administrator account.
+Creates a new administrator account. When we run application first time a admin user will be created by default with user name(admin@gmail.com) and passwor(admin123). so use them to generate token and by using this token we will be able to create new admin.
 
 #### Endpoint
 
