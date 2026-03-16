@@ -129,42 +129,56 @@ Authorization: Bearer <JWT_TOKEN>
 
 ### AUTH / USER
 
-#### `POST /api/users/register`
+### POST /api/users/register
 
-* **Auth:** public
-* **Body**
+**Access:** Public  
+**Description:** Register a new user.
 
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
+---
 
-* **Response (201)** — created user DTO
+#### Request
 
-#### `POST /api/users/login`
+**Headers**
 
-* **Auth:** public
-* **Body**
+- `Content-Type: application/json`
+
+**Request Body (example — from saved response's originalRequest)**
 
 ```json
 {
-  "email": "john@example.com",
-  "password": "password123"
+  "name": "Rahul Sharma",
+  "email": "rahul.sharma@gmail.com",
+  "password": "Rahul@123"
 }
-```
 
+
+```
+cURL Example
+curl -X POST "{{baseUrl}}/api/users/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Rahul Sharma",
+    "email": "rahul.sharma@gmail.com",
+    "password": "Rahul@123"
+  }'
+Response (200)
+{
+  "id": 2,
+  "name": "Rahul Sharma",
+  "email": "rahul.sharma@gmail.com",
+  "password": null,
+  "role": "ROLE_CUSTOMER"
+}
+
+Status Codes
+Code	Description
+200	Success (example in exported response)
+201	Resource created (recommended for successful registration)
+400	Bad request / validation error
+409	Conflict (e.g., email already exists)
+500	Internal server error
 * **Response (200)** — example:
 
-```json
-{
-  "token": "eyJhbGciOiJI...",
-  "tokenType": "Bearer",
-  "expiresIn": 3600000
-}
-```
 
 > Use this token in `Authorization` header for protected calls.
 
