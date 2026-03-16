@@ -159,6 +159,7 @@ curl -X POST "{{baseUrl}}/api/users/register" \
     "email": "rahul.sharma@gmail.com",
     "password": "Rahul@123"
   }'
+  
 Response (200)
 ```
 {
