@@ -178,6 +178,57 @@ Response (200)
 | 409  | Conflict (e.g., email already exists)                      |
 | 500  | Internal server error                                      |
 ---
+### POST /api/users/login
+
+**Access:** Public  
+**Description:** Authenticate a user and return a JWT token for accessing protected endpoints.
+
+---
+
+#### Request
+
+**Headers**
+
+- `Content-Type: application/json`
+
+**Request Body**
+
+```json
+{
+  "email": "rahul.sharma@gmail.com",
+  "password": "Rahul@123"
+}
+```
+cURL Example
+curl -X POST "{{baseUrl}}/api/users/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "rahul.sharma@gmail.com",
+    "password": "Rahul@123"
+  }'
+  
+Response (200)
+```
+{
+  "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJyYWh1bC5zaGFybWFAZ21haWwuY29tIiwiaWF0IjoxNzczNjMyODUyLCJleHAiOjE3NzM3MTkyNTJ9.zvY_8od-p2IkHpwtyaNhE6DnJvMFQq_o-dy9FKcCxl2k43yIzOV_owXSpI7GwWme",
+  "email": "rahul.sharma@gmail.com",
+  "role": "Login Successful"
+}
+```
+Note: Use the returned token in the Authorization header for all protected endpoints.
+
+Example:
+
+Authorization: Bearer <JWT_TOKEN>
+Status Codes
+| Code | Description                           |
+| ---- | ------------------------------------- |
+| 200  | Login successful (JWT token returned) |
+| 400  | Bad request / validation error        |
+| 401  | Unauthorized — invalid credentials    |
+| 500  | Internal server error                 |
+
+---
 
 #### `GET /api/users/me`
 
