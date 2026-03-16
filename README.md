@@ -152,6 +152,7 @@ Authorization: Bearer <JWT_TOKEN>
   "password": "Rahul@123"
 }
 ```
+```bash
 curl -X POST "{{baseUrl}}/api/users/register" \
   -H "Content-Type: application/json" \
   -d '{
@@ -159,7 +160,7 @@ curl -X POST "{{baseUrl}}/api/users/register" \
     "email": "rahul.sharma@gmail.com",
     "password": "Rahul@123"
   }'
-  
+ ``` 
 Response (200)
 ```
 {
@@ -183,8 +184,6 @@ Response (200)
 **Access:** Public  
 **Description:** Authenticate a user and return a JWT token for accessing protected endpoints.
 
----
-
 #### Request
 
 **Headers**
@@ -200,13 +199,14 @@ Response (200)
 }
 ```
 cURL Example
+```bash
 curl -X POST "{{baseUrl}}/api/users/login" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "rahul.sharma@gmail.com",
     "password": "Rahul@123"
   }'
-  
+ ``` 
 Response (200)
 ```
 {
@@ -264,16 +264,95 @@ Status code
 | 401  | Unauthorized          |
 | 403  | Forbidden             |
 | 500  | Internal server error |
+---
 
-#### `PUT /api/users/me`
+### Update Profile
 
-* **Auth:** `ROLE_CUSTOMER` or `ROLE_ADMIN`
-* Update user profile.
+Updates the profile information of the authenticated user.
 
-#### `PUT /api/users/me/password`
+#### Endpoint
 
-* **Auth:** `ROLE_CUSTOMER` or `ROLE_ADMIN`
-* Change password (provide old and new passwords as per API DTO).
+PUT /api/users/me
+
+#### Authorization
+
+Bearer Token (JWT)
+
+#### Request Body
+```{
+  "name": "Rahul Kumar Sharma",
+  "email": "rahul.kumar@gmail.com"
+}
+```
+cURL Example
+```bash
+curl -X PUT "http://localhost:8080/api/users/me" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json" \
+ -d '{
+  "name": "Rahul Kumar Sharma",
+  "email": "rahul.kumar@gmail.com"
+}'
+```
+Response (200)
+```{
+  "id": 2,
+  "name": "Rahul Kumar Sharma",
+  "email": "rahul.kumar@gmail.com",
+  "password": null,
+  "role": "ROLE_CUSTOMER"
+}
+```
+Status code
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 200  | Profile updated successfully   |
+| 400  | Bad request / validation error |
+| 401  | Unauthorized                   |
+| 403  | Forbidden                      |
+| 500  | Internal server error          |
+
+---
+
+Change Password
+
+Changes the password of the authenticated user.
+
+Endpoint
+
+PUT /api/users/me/password
+
+Authorization
+
+Bearer Token (JWT)
+
+| Parameter   | Type   | Description               |
+| ----------- | ------ | ------------------------- |
+| newPassword | String | New password for the user |
+
+
+Example Request URL
+
+/api/users/me/password?newPassword=Rahul@456
+
+```bash
+cURL Example
+curl -X PUT "http://localhost:8080/api/users/me/password?newPassword=Rahul@456" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+Response (200)
+Password updated successfully
+
+Status Codes
+
+Code	Description
+200	Password updated successfully
+400	Bad request
+401	Unauthorized
+403	Forbidden
+500	Internal server error
 
 ---
 
