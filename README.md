@@ -137,8 +137,6 @@ Authorization: Bearer <JWT_TOKEN>
 **Access:** Public  
 **Description:** Register a new user.
 
----
-
 #### Request
 
 **Headers**
@@ -155,8 +153,8 @@ Authorization: Bearer <JWT_TOKEN>
 }
 ```
 curl -X POST "{{baseUrl}}/api/users/register" \
-  -H "Content-Type: application/json" \
-  -d 
+  **Headers**
+  -"Content-Type: application/json" \
   ```json{
     "name": "Rahul Sharma",
     "email": "rahul.sharma@gmail.com",
@@ -181,7 +179,6 @@ Response (200)
 | 409  | Conflict (e.g., email already exists)                      |
 | 500  | Internal server error                                      |
 ---
-```
 
 #### `GET /api/users/me`
 
