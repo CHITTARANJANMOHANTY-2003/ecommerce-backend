@@ -153,15 +153,18 @@ Authorization: Bearer <JWT_TOKEN>
   "email": "rahul.sharma@gmail.com",
   "password": "Rahul@123"
 }
-
+```
 curl -X POST "{{baseUrl}}/api/users/register" \
   -H "Content-Type: application/json" \
-  -d '{
+  -d 
+  ```json{
     "name": "Rahul Sharma",
     "email": "rahul.sharma@gmail.com",
     "password": "Rahul@123"
   }'
+```
 Response (200)
+```
 {
   "id": 2,
   "name": "Rahul Sharma",
@@ -169,6 +172,7 @@ Response (200)
   "password": null,
   "role": "ROLE_CUSTOMER"
 }
+```
 | Code | Description                                                |
 | ---- | ---------------------------------------------------------- |
 | 200  | Success (example shown above from Postman response)        |
