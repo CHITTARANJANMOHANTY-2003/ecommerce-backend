@@ -230,11 +230,40 @@ Status Codes
 
 ---
 
-#### `GET /api/users/me`
+### Get My Profile
 
-* **Auth:** `ROLE_CUSTOMER` or `ROLE_ADMIN`
-* **Header:** `Authorization: Bearer <JWT>`
-* **Description:** returns profile for the current authenticated user.
+Retrieves the profile details of the currently authenticated user.
+
+#### Endpoint
+GET /api/users/me
+
+#### Authorization
+Bearer Token (JWT)
+
+#### cURL Example
+```bash
+curl -X GET "http://localhost:8080/api/users/me" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+Response (200)
+```
+{
+  "id": 2,
+  "name": "Rahul Sharma",
+  "email": "rahul.sharma@gmail.com",
+  "password": null,
+  "role": "ROLE_CUSTOMER"
+}
+```
+Status code
+
+| Code | Description           |
+| ---- | --------------------- |
+| 200  | Request successful    |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 500  | Internal server error |
 
 #### `PUT /api/users/me`
 
