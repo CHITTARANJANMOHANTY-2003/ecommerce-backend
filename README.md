@@ -355,11 +355,6 @@ Password updated successfully
 | 403  | Forbidden                     |
 | 500  | Internal server error         |
 
-
----
-
-Below is the **Markdown documentation strictly following your stored template structure** (###, ####, tables, and fenced code blocks). You can **paste this directly into your `README.md`**.
-
 ---
 
 # Admin Management APIs
@@ -650,63 +645,1014 @@ User deleted successfully
 
 ---
 
-
-### PRODUCTS (public & admin)
-
-#### `GET /api/products`
-
-* **Auth:** public
-* **Query params:** `page`, `size`, `category`, `minPrice`, `maxPrice`, `keyword`, `sort`
-* **Example:**
-  `GET /api/products?category=Electronics&minPrice=1000&maxPrice=5000&page=0&size=10`
-
-#### `GET /api/products/{id}`
-
-* **Auth:** public
-
-#### `GET /api/products/search?keyword=...`
-
-* **Auth:** public
-
-#### `POST /api/products` (admin)
-
-* **Auth:** `ROLE_ADMIN`
-* **Header:** `Authorization: Bearer <JWT>`
-* Create new product (send product DTO: name, description, price, stock, category, imageUrl, rating).
-
-#### `PUT /api/products/{id}` (admin)
-
-#### `DELETE /api/products/{id}` (admin)
+# Product APIs
 
 ---
 
-### CART
+## Get All Products
 
-All cart endpoints require `ROLE_CUSTOMER` or `ROLE_ADMIN` (JWT header).
+Returns a paginated list of all available products.
 
-* `GET /api/cart` — get current user cart
-* `POST /api/cart/add/{productId}?quantity=` — add item
-* `PUT /api/cart/update/{productId}?quantity=` — update item quantity
-* `DELETE /api/cart/remove/{productId}` — remove item
-* `DELETE /api/cart/clear` — clear cart
+#### Endpoint
+
+GET /api/products
+
+#### Authorization
+
+None
+
+| Parameter | Type    | Description                            |
+| --------- | ------- | -------------------------------------- |
+| page      | Integer | Page number (optional)                 |
+| size      | Integer | Number of products per page (optional) |
+| sort      | String  | Sorting criteria (optional)            |
+
+Example Request URL
+
+/api/products
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/products" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "totalPages": 1,
+  "totalElements": 2,
+  "size": 10,
+  "content": [
+    {
+      "id": 1,
+      "name": "iPhone 13",
+      "description": "Apple iPhone 13 with A15 Bionic Chip",
+      "price": 65000,
+      "stock": 20,
+      "category": "Electronics",
+      "imageUrl": "https://example.com/iphone13.jpg",
+      "rating": 4.7
+    },
+    {
+      "id": 2,
+      "name": "Nike Running Shoes",
+      "description": "Comfortable running shoes",
+      "price": 4500,
+      "stock": 50,
+      "category": "Fashion",
+      "imageUrl": "https://example.com/nike.jpg",
+      "rating": 4.3
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                     |
+| ---- | ------------------------------- |
+| 200  | Products retrieved successfully |
+| 400  | Bad request                     |
+| 500  | Internal server error           |
 
 ---
 
-### ORDERS
+# Get Product By ID
 
-* `POST /api/orders/checkout?paymentMode=COD`
-  **Auth:** `ROLE_CUSTOMER` or `ROLE_ADMIN`
-  Converts cart → order; order stored with `PENDING_PAYMENT` (or other status based on payment mode).
+Returns details of a specific product.
 
-* `POST /api/orders/{orderId}/pay?success=true|false`
-  **Auth:** `ROLE_CUSTOMER` or `ROLE_ADMIN`
-  Query param `success`: `true` → payment succeeded, `false` → payment failed. Order status and payment status updated accordingly.
+#### Endpoint
 
-* `GET /api/orders` — list current user orders (auth required)
+GET /api/products/{id}
 
-* `GET /api/orders/{id}` — order details (user only for own orders)
+#### Authorization
 
-* `PUT /api/orders/{id}/status?status=SHIPPED` — **admin only**; allowed statuses: `PLACED`, `SHIPPED`, `DELIVERED`, `CANCELLED`, `PAYMENT_FAILED`.
+None
+
+| Parameter | Type | Description              |
+| --------- | ---- | ------------------------ |
+| id        | Long | Unique ID of the product |
+
+Example Request URL
+
+/api/products/1
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/products/1" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 1,
+  "name": "iPhone 13",
+  "description": "Apple iPhone 13 with A15 Bionic Chip",
+  "price": 65000,
+  "stock": 20,
+  "category": "Electronics",
+  "imageUrl": "https://example.com/iphone13.jpg",
+  "rating": 4.7
+}
+```
+
+#### Status Codes
+
+| Code | Description                    |
+| ---- | ------------------------------ |
+| 200  | Product retrieved successfully |
+| 404  | Product not found              |
+| 500  | Internal server error          |
+
+---
+
+# Search Products
+
+Search products using filters such as category and price range.
+
+#### Endpoint
+
+GET /api/products
+
+#### Authorization
+
+None
+
+| Parameter | Type   | Description                 |
+| --------- | ------ | --------------------------- |
+| category  | String | Filter products by category |
+| minPrice  | Double | Minimum product price       |
+| maxPrice  | Double | Maximum product price       |
+
+Example Request URL
+
+/api/products?category=Electronics&minPrice=1000&maxPrice=70000
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/products?category=Electronics&minPrice=1000&maxPrice=70000" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "totalPages": 1,
+  "totalElements": 1,
+  "size": 10,
+  "content": [
+    {
+      "id": 1,
+      "name": "iPhone 13",
+      "description": "Apple iPhone 13 with A15 Bionic Chip",
+      "price": 65000,
+      "stock": 20,
+      "category": "Electronics",
+      "imageUrl": "https://example.com/iphone13.jpg",
+      "rating": 4.7
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                     |
+| ---- | ------------------------------- |
+| 200  | Products retrieved successfully |
+| 400  | Bad request                     |
+| 500  | Internal server error           |
+
+---
+
+# Create Product (Admin)
+
+Creates a new product. Only accessible by Admin users.
+
+#### Endpoint
+
+POST /api/products
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter   | Type    | Description          |
+| ----------- | ------- | -------------------- |
+| name        | String  | Product name         |
+| description | String  | Product description  |
+| price       | Double  | Product price        |
+| stock       | Integer | Available stock      |
+| category    | String  | Product category     |
+| imageUrl    | String  | Image URL of product |
+| rating      | Double  | Product rating       |
+
+```json
+Request Body
+{
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 4500,
+  "stock": 50,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.3
+}
+```
+
+```bash
+cURL Example
+curl -X POST "http://localhost:8080/api/products" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json" \
+ -d '{
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 4500,
+  "stock": 50,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.3
+}'
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 4500,
+  "stock": 50,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.3
+}
+```
+
+#### Status Codes
+
+| Code | Description                  |
+| ---- | ---------------------------- |
+| 200  | Product created successfully |
+| 400  | Bad request                  |
+| 401  | Unauthorized                 |
+| 403  | Forbidden                    |
+| 500  | Internal server error        |
+
+---
+
+# Update Product (Admin)
+
+Updates an existing product. Only accessible by Admin users.
+
+#### Endpoint
+
+PUT /api/products/{id}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description                 |
+| --------- | ---- | --------------------------- |
+| id        | Long | ID of the product to update |
+
+```json
+Request Body
+{
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 3500,
+  "stock": 75,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.6
+}
+```
+
+Example Request URL
+
+/api/products/2
+
+```bash
+cURL Example
+curl -X PUT "http://localhost:8080/api/products/2" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json" \
+ -d '{
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 3500,
+  "stock": 75,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.6
+}'
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "name": "Nike Running Shoes",
+  "description": "Comfortable running shoes",
+  "price": 3500,
+  "stock": 75,
+  "category": "Fashion",
+  "imageUrl": "https://example.com/nike.jpg",
+  "rating": 4.6
+}
+```
+
+#### Status Codes
+
+| Code | Description                  |
+| ---- | ---------------------------- |
+| 200  | Product updated successfully |
+| 400  | Bad request                  |
+| 401  | Unauthorized                 |
+| 403  | Forbidden                    |
+| 404  | Product not found            |
+| 500  | Internal server error        |
+
+---
+
+# Delete Product (Admin)
+
+Deletes a product by ID. Only accessible by Admin users.
+
+#### Endpoint
+
+DELETE /api/products/{id}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description                 |
+| --------- | ---- | --------------------------- |
+| id        | Long | ID of the product to delete |
+
+Example Request URL
+
+/api/products/2
+
+```bash
+cURL Example
+curl -X DELETE "http://localhost:8080/api/products/2" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```
+Product deleted successfully
+```
+
+#### Status Codes
+
+| Code | Description                  |
+| ---- | ---------------------------- |
+| 200  | Product deleted successfully |
+| 401  | Unauthorized                 |
+| 403  | Forbidden                    |
+| 404  | Product not found            |
+| 500  | Internal server error        |
+
+---
+
+# Cart APIs
+
+---
+
+# Add Product To Cart
+
+Adds a product to the authenticated user's cart.
+
+#### Endpoint
+
+POST /api/cart/add/{productId}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type    | Description              |
+| --------- | ------- | ------------------------ |
+| productId | Long    | ID of the product to add |
+| quantity  | Integer | Quantity of the product  |
+
+Example Request URL
+
+/api/cart/add/1?quantity=2
+
+```bash
+cURL Example
+curl -X POST "http://localhost:8080/api/cart/add/1?quantity=2" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "userId": 2,
+  "totalPrice": 130000,
+  "items": [
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 2,
+      "price": 65000,
+      "subtotal": 130000
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                        |
+| ---- | ---------------------------------- |
+| 200  | Product added to cart successfully |
+| 401  | Unauthorized                       |
+| 404  | Product not found                  |
+| 500  | Internal server error              |
+
+---
+
+# Get Cart
+
+Returns the authenticated user's cart details.
+
+#### Endpoint
+
+GET /api/cart
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description            |
+| --------- | ---- | ---------------------- |
+| None      | -    | No parameters required |
+
+Example Request URL
+
+/api/cart
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/cart" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "userId": 2,
+  "totalPrice": 152500,
+  "items": [
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 2,
+      "price": 65000,
+      "subtotal": 130000
+    },
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 5,
+      "price": 4500,
+      "subtotal": 22500
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                 |
+| ---- | --------------------------- |
+| 200  | Cart retrieved successfully |
+| 401  | Unauthorized                |
+| 500  | Internal server error       |
+
+---
+
+# Update Cart Quantity
+
+Updates the quantity of a specific product in the cart.
+
+#### Endpoint
+
+PUT /api/cart/update/{productId}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type    | Description       |
+| --------- | ------- | ----------------- |
+| productId | Long    | ID of the product |
+| quantity  | Integer | Updated quantity  |
+
+Example Request URL
+
+/api/cart/update/1?quantity=5
+
+```bash
+cURL Example
+curl -X PUT "http://localhost:8080/api/cart/update/1?quantity=5" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "userId": 2,
+  "totalPrice": 347500,
+  "items": [
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 5,
+      "price": 65000,
+      "subtotal": 325000
+    },
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 5,
+      "price": 4500,
+      "subtotal": 22500
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | Cart updated successfully |
+| 401  | Unauthorized              |
+| 404  | Product not found in cart |
+| 500  | Internal server error     |
+
+---
+
+# Remove Item From Cart
+
+Removes a specific product from the cart.
+
+#### Endpoint
+
+DELETE /api/cart/remove/{productId}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description                 |
+| --------- | ---- | --------------------------- |
+| productId | Long | ID of the product to remove |
+
+Example Request URL
+
+/api/cart/remove/1
+
+```bash
+cURL Example
+curl -X DELETE "http://localhost:8080/api/cart/remove/1" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 1,
+  "userId": 1,
+  "totalPrice": 207000,
+  "items": [
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 46,
+      "price": 4500,
+      "subtotal": 207000
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | Item removed successfully |
+| 401  | Unauthorized              |
+| 404  | Item not found in cart    |
+| 500  | Internal server error     |
+
+---
+
+# Clear Cart
+
+Removes all items from the authenticated user's cart.
+
+#### Endpoint
+
+DELETE /api/cart/clear
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description            |
+| --------- | ---- | ---------------------- |
+| None      | -    | No parameters required |
+
+Example Request URL
+
+/api/cart/clear
+
+```bash
+cURL Example
+curl -X DELETE "http://localhost:8080/api/cart/clear" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+Cart cleared successfully
+
+#### Status Codes
+
+| Code | Description               |
+| ---- | ------------------------- |
+| 200  | Cart cleared successfully |
+| 401  | Unauthorized              |
+| 500  | Internal server error     |
+
+---
+
+
+# Order APIs
+
+---
+
+# Checkout Order
+
+Creates a new order from the authenticated user's cart.
+
+#### Endpoint
+
+POST /api/orders/checkout
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter   | Type   | Description                                 |
+| ----------- | ------ | ------------------------------------------- |
+| paymentMode | String | Payment method for the order (Example: COD) |
+
+Example Request URL
+
+/api/orders/checkout?paymentMode=COD
+
+```bash
+cURL Example
+curl -X POST "http://localhost:8080/api/orders/checkout?paymentMode=COD" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 1,
+  "userId": 2,
+  "totalAmount": 347500,
+  "orderDate": "2026-03-16T04:39:15.110857610Z",
+  "paymentStatus": "PENDING",
+  "orderStatus": "PENDING_PAYMENT",
+  "items": [
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 5,
+      "price": 65000
+    },
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 5,
+      "price": 4500
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                |
+| ---- | -------------------------- |
+| 200  | Order created successfully |
+| 401  | Unauthorized               |
+| 500  | Internal server error      |
+
+---
+
+# Pay Order
+
+Processes payment for an order.
+
+#### Endpoint
+
+POST /api/orders/{orderId}/pay
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type    | Description                                      |
+| --------- | ------- | ------------------------------------------------ |
+| orderId   | Long    | ID of the order                                  |
+| success   | Boolean | Payment result (true = success, false = failure) |
+
+Example Request URL
+
+/api/orders/1/pay?success=true
+
+```bash
+cURL Example
+curl -X POST "http://localhost:8080/api/orders/1/pay?success=true" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 1,
+  "userId": 2,
+  "totalAmount": 347500,
+  "orderDate": "2026-03-16T04:39:15.110858Z",
+  "paymentStatus": "SUCCESS",
+  "orderStatus": "PLACED",
+  "items": [
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 5,
+      "price": 65000
+    },
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 5,
+      "price": 4500
+    }
+  ]
+}
+```
+
+#### Response (500)
+
+```json
+{
+  "error": "Server Error",
+  "message": "Product out of stock",
+  "timestamp": "2026-03-16T04:43:51.078200005",
+  "status": 500
+}
+```
+
+#### Status Codes
+
+| Code | Description                           |
+| ---- | ------------------------------------- |
+| 200  | Payment processed successfully        |
+| 401  | Unauthorized                          |
+| 404  | Order not found                       |
+| 500  | Payment failed / Product out of stock |
+
+---
+
+# Get My Orders
+
+Returns all orders placed by the authenticated user.
+
+#### Endpoint
+
+GET /api/orders
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description            |
+| --------- | ---- | ---------------------- |
+| None      | -    | No parameters required |
+
+Example Request URL
+
+/api/orders
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/orders" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+[
+  {
+    "id": 1,
+    "userId": 2,
+    "totalAmount": 347500,
+    "orderDate": "2026-03-16T04:39:15.110858Z",
+    "paymentStatus": "SUCCESS",
+    "orderStatus": "PLACED",
+    "items": [
+      {
+        "productId": 1,
+        "productName": "iPhone 13",
+        "quantity": 5,
+        "price": 65000
+      },
+      {
+        "productId": 3,
+        "productName": "Nike Running Shoes",
+        "quantity": 5,
+        "price": 4500
+      }
+    ]
+  }
+]
+```
+
+#### Status Codes
+
+| Code | Description                   |
+| ---- | ----------------------------- |
+| 200  | Orders retrieved successfully |
+| 401  | Unauthorized                  |
+| 500  | Internal server error         |
+
+---
+
+# Get Order By ID
+
+Returns details of a specific order.
+
+#### Endpoint
+
+GET /api/orders/{orderId}
+
+#### Authorization
+
+Bearer Token (JWT)
+
+| Parameter | Type | Description     |
+| --------- | ---- | --------------- |
+| orderId   | Long | ID of the order |
+
+Example Request URL
+
+/api/orders/2
+
+```bash
+cURL Example
+curl -X GET "http://localhost:8080/api/orders/2" \
+ -H "Authorization: Bearer <JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "userId": 1,
+  "totalAmount": 207000,
+  "orderDate": "2026-03-16T04:41:01.812594Z",
+  "paymentStatus": "PENDING",
+  "orderStatus": "PENDING_PAYMENT",
+  "items": [
+    {
+      "productId": 3,
+      "productName": "Nike Running Shoes",
+      "quantity": 46,
+      "price": 4500
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                  |
+| ---- | ---------------------------- |
+| 200  | Order retrieved successfully |
+| 401  | Unauthorized                 |
+| 404  | Order not found              |
+| 500  | Internal server error        |
+
+---
+
+# Update Order Status (Admin)
+
+Allows an admin to update the status of an order.
+
+#### Endpoint
+
+PUT /api/orders/{orderId}/status
+
+#### Authorization
+
+Bearer Token (Admin JWT)
+
+| Parameter | Type   | Description                                                   |
+| --------- | ------ | ------------------------------------------------------------- |
+| orderId   | Long   | ID of the order                                               |
+| status    | String | Updated order status (Example: SHIPPED, DELIVERED, CANCELLED) |
+
+Example Request URL
+
+/api/orders/2/status?status=SHIPPED
+
+```bash
+cURL Example
+curl -X PUT "http://localhost:8080/api/orders/2/status?status=SHIPPED" \
+ -H "Authorization: Bearer <ADMIN_JWT_TOKEN>" \
+ -H "Content-Type: application/json"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": 2,
+  "userId": 3,
+  "totalAmount": 217500,
+  "orderDate": "2026-03-16T06:44:12.186737Z",
+  "paymentStatus": "SUCCESS",
+  "orderStatus": "SHIPPED",
+  "items": [
+    {
+      "productId": 2,
+      "productName": "Nike Running Shoes",
+      "quantity": 5,
+      "price": 4500
+    },
+    {
+      "productId": 1,
+      "productName": "iPhone 13",
+      "quantity": 3,
+      "price": 65000
+    }
+  ]
+}
+```
+
+#### Status Codes
+
+| Code | Description                       |
+| ---- | --------------------------------- |
+| 200  | Order status updated successfully |
+| 401  | Unauthorized                      |
+| 403  | Forbidden (Admin only)            |
+| 404  | Order not found                   |
+| 500  | Internal server error             |
 
 ---
 
@@ -778,6 +1724,88 @@ I reformatted your coverage summary into a clear **Total** summary (the full det
 * `product_id` (FK → products.id)
 * `quantity` (int)
 * `price` (decimal)
+
+---
+erDiagram
+    %% Tables / Columns (PK / UNIQUE / ENUM noted)
+    
+    users {
+        int id PK
+        string name
+        string email UNIQUE
+        string password
+        enum role /* ROLE_ADMIN, ROLE_CUSTOMER */
+        datetime created_at
+        datetime updated_at
+    }
+    products {
+        int id PK
+        string name
+        text description
+        decimal price
+        int stock
+        string category
+        string image_url
+        decimal rating
+        datetime created_at
+        datetime updated_at
+    }
+    cart {
+        int id PK
+        int user_id FK
+        decimal total_price
+        datetime created_at
+        datetime updated_at
+    }
+    cart_item {
+        int id PK
+        int cart_id FK
+        int product_id FK
+        int quantity
+        decimal subtotal
+    }
+    orders {
+        int id PK
+        int user_id FK
+        decimal total_amount
+        datetime order_date
+        enum payment_status /* PENDING, SUCCESS, FAILED */
+        enum order_status /* PENDING_PAYMENT, PLACED, SHIPPED, DELIVERED, CANCELLED, PAYMENT_FAILED */
+        enum payment_mode /* COD, ONLINE */
+        datetime created_at
+        datetime updated_at
+    }
+    order_item {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal price
+    }
+
+    %% Relationships / Cardinality
+    %% One user has one (current) cart — customer maintains their own cart
+    users ||--|| cart : "owns / has one current"
+
+    %% A user can place many orders
+    users ||--o{ orders : "places"
+
+    %% cart contains many cart_items; each cart_item references exactly one product
+    cart ||--o{ cart_item : "contains"
+    products ||--o{ cart_item : "referenced_by"
+
+    %% orders contain many order_items; each order_item references exactly one product
+    orders ||--o{ order_item : "includes"
+    products ||--o{ order_item : "referenced_by"
+
+    %% Products independent; stock tracked in products.stock (inventory management)
+    %% (If you later add inventory log, connect it to products)
+
+    %% Notes for uniqueness / constraints and behavior (non-graphical)
+    %% - users.email is UNIQUE
+    %% - role, payment_status, order_status, payment_mode are ENUMs (enforce in DB / app)
+    %% - On successful order (payment_status == SUCCESS), reduce products.stock by sum(order_item.quantity)
+    ```
 
 ---
 
