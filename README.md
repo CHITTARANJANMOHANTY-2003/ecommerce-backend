@@ -153,14 +153,12 @@ Authorization: Bearer <JWT_TOKEN>
 }
 ```
 curl -X POST "{{baseUrl}}/api/users/register" \
-  **Headers**
-  -"Content-Type: application/json" \
-  ```json{
+  -H "Content-Type: application/json" \
+  -d '{
     "name": "Rahul Sharma",
     "email": "rahul.sharma@gmail.com",
     "password": "Rahul@123"
   }'
-```
 Response (200)
 ```
 {
