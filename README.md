@@ -1665,9 +1665,7 @@ I reformatted your coverage summary into a clear **Total** summary (the full det
 * **Instructions:** `500` missed of `3,609` total → **86%** instruction coverage
 * **Branches:** `29` missed of `68` total → **57%** branch coverage
 * (Full Jacoco HTML report included in submission — open `jacoco-report/index.html` for line-by-line package/class data.)
-
-> If you want the full per-package table re-aligned into columns for every package I can format it precisely from the Jacoco text/CSV — include the raw `jacoco` summary output and I’ll reformat it exactly. In your submission include the full `jacoco` folder so the grader can inspect interactive HTML.
-
+  
 ---
 
 ## Database schema (entities & columns)
