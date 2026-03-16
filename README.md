@@ -1739,15 +1739,18 @@ erDiagram
     products {
         int id PK
         string name
-        decimal price
+        string description
+        bigdecimal price
         int stock
         string category
+        string imageUrl
+        double rating
     }
 
     cart {
         int id PK
         int user_id FK
-        decimal total_price
+        double total_price
     }
 
     cart_item {
@@ -1755,13 +1758,13 @@ erDiagram
         int cart_id FK
         int product_id FK
         int quantity
-        decimal subtotal
+        double subtotal
     }
 
     orders {
         int id PK
         int user_id FK
-        decimal total_amount
+        double total_amount
         datetime order_date
     }
 
@@ -1770,7 +1773,7 @@ erDiagram
         int order_id FK
         int product_id FK
         int quantity
-        decimal price
+        bigdecimal price
     }
 
     users ||--|| cart : owns
