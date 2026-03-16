@@ -1726,37 +1726,30 @@ I reformatted your coverage summary into a clear **Total** summary (the full det
 * `price` (decimal)
 
 ---
+```mermaid
 erDiagram
-    %% Tables / Columns (PK / UNIQUE / ENUM noted)
-    
     users {
         int id PK
         string name
-        string email UNIQUE
+        string email
         string password
-        enum role /* ROLE_ADMIN, ROLE_CUSTOMER */
-        datetime created_at
-        datetime updated_at
+        enum role
     }
+
     products {
         int id PK
         string name
-        text description
         decimal price
         int stock
         string category
-        string image_url
-        decimal rating
-        datetime created_at
-        datetime updated_at
     }
+
     cart {
         int id PK
         int user_id FK
         decimal total_price
-        datetime created_at
-        datetime updated_at
     }
+
     cart_item {
         int id PK
         int cart_id FK
@@ -1764,17 +1757,14 @@ erDiagram
         int quantity
         decimal subtotal
     }
+
     orders {
         int id PK
         int user_id FK
         decimal total_amount
         datetime order_date
-        enum payment_status /* PENDING, SUCCESS, FAILED */
-        enum order_status /* PENDING_PAYMENT, PLACED, SHIPPED, DELIVERED, CANCELLED, PAYMENT_FAILED */
-        enum payment_mode /* COD, ONLINE */
-        datetime created_at
-        datetime updated_at
     }
+
     order_item {
         int id PK
         int order_id FK
@@ -1783,30 +1773,13 @@ erDiagram
         decimal price
     }
 
-    %% Relationships / Cardinality
-    %% One user has one (current) cart — customer maintains their own cart
-    users ||--|| cart : "owns / has one current"
-
-    %% A user can place many orders
-    users ||--o{ orders : "places"
-
-    %% cart contains many cart_items; each cart_item references exactly one product
-    cart ||--o{ cart_item : "contains"
-    products ||--o{ cart_item : "referenced_by"
-
-    %% orders contain many order_items; each order_item references exactly one product
-    orders ||--o{ order_item : "includes"
-    products ||--o{ order_item : "referenced_by"
-
-    %% Products independent; stock tracked in products.stock (inventory management)
-    %% (If you later add inventory log, connect it to products)
-
-    %% Notes for uniqueness / constraints and behavior (non-graphical)
-    %% - users.email is UNIQUE
-    %% - role, payment_status, order_status, payment_mode are ENUMs (enforce in DB / app)
-    %% - On successful order (payment_status == SUCCESS), reduce products.stock by sum(order_item.quantity)
-    ```
-
+    users ||--|| cart : owns
+    users ||--o{ orders : places
+    cart ||--o{ cart_item : contains
+    products ||--o{ cart_item : referenced
+    orders ||--o{ order_item : includes
+    products ||--o{ order_item : referenced
+```
 ---
 
 
