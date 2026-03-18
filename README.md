@@ -12,11 +12,11 @@ Supports user registration/login, role-based access (ADMIN / CUSTOMER), product 
 | Language           | Java 17                     |
 | Framework          | Spring Boot 3               |
 | ORM                | Spring Data JPA / Hibernate |
-| Database           | MySQL                       |
+| Database           | MySQL(port number:3307)     |
 | Security           | Spring Security + JWT       |
 | Build tool         | Maven                       |
 | Testing            | JUnit 5, Mockito            |
-| API docs           | Swagger (OpenAPI)           |
+| API docs           | Swagger(OpenAPI) and Postman|
 | Containerization   | Docker                      |
 | Repo / hosting     | GitHub                      |
 
@@ -83,9 +83,10 @@ mvn clean install
 5. **Run**
 
 ```bash
-mvn spring-boot:run
-# or
-java -jar target/ecommerce-backend.jar
+-go to terminal
+-move to root project directory
+-execute the following command
+  docker-compose up --build
 ```
 
 6. **Swagger UI**
