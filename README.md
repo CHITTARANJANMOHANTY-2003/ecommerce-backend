@@ -60,7 +60,7 @@ CREATE DATABASE ecommerce_db;
 
 3. **Configure properties**
 
-Create `src/main/resources/application.properties` **locally** (do not commit secrets), or add `application.properties.example` (committed) with placeholders:
+configure password in `src/main/resources/application.properties`, `src/main/resources/application-docker.properties`, `docker-compose.yml`
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce_db
